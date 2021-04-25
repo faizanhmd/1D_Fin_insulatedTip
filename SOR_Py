@@ -1,5 +1,6 @@
 #File created by Faizan Hamid on 26/12/2020
 import numpy as np
+import matplotlib.pyplot as plt
 
 n = int(input("Enter the no of gridpoints: "))
 L = 1
@@ -24,7 +25,7 @@ if 1<alpha<2:
 
     print("----------------------------------")
     #Grid Generation
-    x = np.linspace(0,1,n)
+    X = np.linspace(0,1,n)
 
     #Iteration loop
     err = 1
@@ -49,3 +50,12 @@ if 1<alpha<2:
     print("\nThe number of ieration performed is :",count)
 else:
     print("Wrong input for alpha!! plz try again.")
+
+#Creating a Temp v/s X graph using matplotlib
+x = X
+y = Onew
+plt.title("Temp v/s X")
+plt.xlabel("X")
+plt.ylabel("Temp")
+plt.plot(x,y, color = "red", linewidth = "2")
+plt.show()
