@@ -18,20 +18,19 @@ print("----------------------------------")
 #Grid Generation
 x = np.linspace(0,1,n)
 
-#Iteration loop
 err = 1
-
+#Iteration loop
 while err>eps:
     err = 0
 
     #Space loop
     for i in range(1,n-1):
         Onew[i] = (O[i+1]+O[i-1])/D
-        Odiff[i] = (Onew[i]-O[i])
-        err = max(err, Odiff[i])
+        Odiff[i] = abs(Onew[i]-O[i])
         O[i] = Onew[i]
     Onew[n-1] = 2*O[n-2]/D
     O[n-1] = Onew[n-1]
+    err = max(Odiff)
     count = count+1
 
 print("The obtained Temp are as follows: \n")
