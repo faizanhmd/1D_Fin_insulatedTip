@@ -1,0 +1,95 @@
+#File created by Faizan Hamid on 26/12/2020
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    int i,n,count=0;
+    cout<<"Enter the number of grid points"<<endl;
+    cin>>n;
+    double alpha,y,L=1,m=2,D,dx,eps=0.000001;
+    double x[n],Onew[n],O[n],Odiff[n],Otemp[n];
+    dx=L/(n-1);
+    D=2+m*m*L*L*dx*dx;
+    cout<<"The value of D is = "<<D<<endl;
+
+    cout<<"Enter the value of alpha between 1 and 2 for SOR:"<<endl;
+    cin>>alpha;
+    if(1<alpha&&alpha<2)
+    {
+
+        x[0]=0;
+        for(i=1;i<n;i++)
+        {
+            x[i]=x[i-1]+dx;
+        }
+
+        for(i=1;i<n;i++)
+        {
+            Onew[i]=0;
+            Otemp[i]=0;
+            O[i]=0;
+        }
+        O[0]=1;
+        Onew[0]=1;
+
+        do
+        {
+            y=0;
+
+            for(i=1;i<n-1;i++)
+            {
+                Otemp[i]=(O[i+1]+O[i-1])/D;
+                Onew[i]=alpha*Otemp[i]+(1-alpha)*O[i];
+
+                Odiff[i]=abs(Onew[i]-O[i]);
+                y=max(y,Odiff[i]);
+
+                O[i]=Onew[i];
+            }
+
+            Onew[n-1]=2*O[n-2]/D;
+            O[n-1]=Onew[n-1];
+
+        count++;
+        }
+        while(y>eps);
+
+        for(i=0;i<n;i++)
+        {
+            cout<<"The obtained temperatures are as follows :"<<endl;
+            cout<<"T"<<i+1<<" = "<<Onew[i]<<endl;
+        }
+
+        cout<<"The number of iteration is :"<<count<<endl;
+
+
+        //Writing the results to a file
+
+        ofstream file("1D_Fin_insulated_SOR.txt");
+
+        if(!file.is_open())                 //to check if any error in creating or writing to the file
+        {
+            cout<<"Error while opening or writing the File"<<endl;
+        }
+
+        else
+        {
+            for(i=0;i<n;i++)
+            {
+                file<<x[i]<<"\t"<<Onew[i]<<endl;
+            }
+            cout<<"File written successfully"<<endl;
+            file.close();
+        }
+    }
+
+    else
+    {
+        cout<<"Wrong input for alpha"<<endl;
+    }
+
+    return 0;
+}
