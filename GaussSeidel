@@ -1,0 +1,41 @@
+import numpy as np
+n = int(input("Enter the no of gridpoints: "))
+L = 1
+m = 2
+count = 0
+eps = 0.000001  #eps is tolerance
+
+#Arrays initialisation
+O = np.zeros(n)
+Odiff = np.zeros(n)
+Onew = np.zeros(n)  
+O[0] = Onew[0] = 1
+dx = L/(n-1)    #Grid_length
+D = 2+(m**2)*(L**2)*(dx**2)
+print("The value of D is :", D)
+print("----------------------------------")
+
+#Grid Generation
+x = np.linspace(0,1,n)
+
+#Iteration loop
+err = 1
+
+while err>eps:
+    err = 0
+
+    #Space loop
+    for i in range(1,n-1):
+        Onew[i] = (O[i+1]+O[i-1])/D
+        Odiff[i] = (Onew[i]-O[i])
+        err = max(err, Odiff[i])
+        O[i] = Onew[i]
+    Onew[n-1] = 2*O[n-2]/D
+    O[n-1] = Onew[n-1]
+    count = count+1
+
+print("The obtained Temp are as follows: \n")
+for i in range(n):
+    print(f"T{i+1} = {Onew[i]}")
+
+print("\nThe number of ieration performed is :",count)
