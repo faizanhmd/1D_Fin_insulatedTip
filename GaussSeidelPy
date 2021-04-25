@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 n = int(input("Enter the no of gridpoints: "))
 L = 1
 m = 2
@@ -16,7 +17,7 @@ print("The value of D is :", D)
 print("----------------------------------")
 
 #Grid Generation
-x = np.linspace(0,1,n)
+X = np.linspace(0,1,n)
 
 err = 1
 #Iteration loop
@@ -38,3 +39,12 @@ for i in range(n):
     print(f"T{i+1} = {Onew[i]}")
 
 print("\nThe number of ieration performed is :",count)
+
+#Creating a Temp v/s X graph using matplotlib
+x = X
+y = Onew
+plt.xlabel("X")
+plt.ylabel("Temp")
+plt.title("Temp vs X")
+plt.plot(x,y, color = "red", linewidth = "2")
+plt.show()
