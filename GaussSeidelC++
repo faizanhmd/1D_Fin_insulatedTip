@@ -1,0 +1,86 @@
+#File created by Faizan Hamid on 26/12/2020
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    int i,n,count=0;
+    cout<<"Enter the number of grid points"<<endl;
+    cin>>n;
+    double err,L=1,m=2,D,dx,eps=0.000001;
+    double x[n],Onew[n],O[n],Odiff[n];
+    dx=L/(n-1);
+    D=2+m*m*L*L*dx*dx;
+    cout<<"The value of D is = "<<D<<endl;
+
+    //Grid generation
+    x[0]=0;
+    for(i=1;i<n;i++)
+    {
+        x[i]=x[i-1]+dx;
+    }
+
+    //Array initialisation
+    for(i=1;i<n;i++)
+    {
+        Onew[i]=0;
+        O[i]=0;
+    }
+    O[0]=1;
+    Onew[0]=1;
+
+    //Iteration loop
+    do
+    {
+
+        err=0;
+
+        //Space loop
+        for(i=1;i<n-1;i++)
+        {
+            Onew[i]=(O[i+1]+O[i-1])/D;
+
+            Odiff[i]=abs(Onew[i]-O[i]);
+            err=max(err,Odiff[i]);
+
+            O[i]=Onew[i];
+        }
+
+        Onew[n-1]=2*O[n-2]/D;
+        O[n-1]=Onew[n-1];
+
+    count++;
+    }
+    while(err>eps);
+
+    cout<<"The obtained temperatures are as follows :"<<endl;
+    for(i=0;i<n;i++)
+    {
+        cout<<"T"<<i+1<<" = "<<Onew[i]<<endl;
+    }
+
+    cout<<"The number of iteration is :"<<count<<endl;
+
+
+    //Writing the results to a file
+
+    ofstream file("1D_Fin_insulated_GS_51GP.txt");
+
+    if(!file.is_open())                 //to check if any error in creating or writing to the file
+    {
+        cout<<"Error while opening or writing the File"<<endl;
+    }
+    else
+    {
+        for(i=0;i<n;i++)
+        {
+            file<<x[i]<<"\t"<<Onew[i]<<endl;
+        }
+        cout<<"File written successfully"<<endl;
+        file.close();
+    }
+
+    return 0;
+}
