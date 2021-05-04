@@ -1,0 +1,67 @@
+#File created by Faizan Hamid on 28/04/2021
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = int(input("Enter the number of grid points in x direction: "))
+y = int(input("Enter the number of grid points in y direction: "))
+L = 1
+W = 1
+count = 0
+eps = 0.001
+print(f"The mesh generated is of {x}X{y} gridpoints")
+dx = L/(x-1)
+dy = W/(y-1)
+#Grid_generation
+Grid_X = np.linspace(0,1,x)
+Grid_Y = np.linspace(0,1,y)
+
+#Array Initialisation
+Onew = np.zeros((x,y))
+O = np.zeros((x,y))
+Odiff = np.zeros((x,y))
+
+#BC
+for i in range(0,x):
+    O[i][y-1] = 100
+    Onew[i][y-1] = 100
+
+#Iteration loop
+err = 1
+while err>eps:
+    err = 0
+
+    #Space Loop
+    for i in range(1,x-1):
+        for j in range(1,y-1):
+            Onew[i][j] = (O[i+1][j]+O[i-1][j]+O[i][j+1]+O[i][j-1])/4
+
+            Odiff[i][j] = abs(Onew[i][j]-O[i][j])
+
+            O[i][j] = Onew[i][j]
+
+    err = np.amax(Odiff)
+    count = count+1
+X, Y = np.meshgrid(Grid_X, Grid_Y)
+print("The values of temp obtained at midpoints is: ", Onew[5][10])
+print("The total no of iteration is : ", count)
+
+#Creating
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Temp Contour")
+plt.contourf(Y,X,Onew)
+plt.legend()
+plt.show()
+
+#File Writing
+with open("F:\\Skill Develpmn\\Python\\output files\\2D_HC_GS.txt","w") as f:
+    f.write('Variables = "X" "Y" "T"')
+    f.write("\nzone")
+    f.write(f"\ni = {x}")
+    f.write(f"\nj = {y}")
+    for i in range(0,x):
+        for j in range(0,y):
+            f.write(f"\n{Grid_X[i]}\t{Grid_Y[j]}\t{Onew[i][j]}")
+
+print("File has been written!")
