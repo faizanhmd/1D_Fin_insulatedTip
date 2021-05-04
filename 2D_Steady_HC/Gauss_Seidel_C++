@@ -1,0 +1,104 @@
+//File created by Faizan Hamid on 30/12/2020
+
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    int i,j,x=101,y=101,L=1,W=1,count=0;                //L is xLength and W is yLength
+    double dx,dy,err,eps=0.001 ;
+    cout<<"Mesh generated is of 101X101 grid points"<<endl;
+    double Grid_X[x], Grid_Y[y];
+    double Onew[x][y],O[x][y],Odiff[x][y];
+
+    dx=(double)L/(x-1);
+    dy=(double)W/(y-1);
+
+    //Grid or Mesh generation
+    Grid_X[0]=0;
+    for(i=1;i<x;i++)
+    {
+        Grid_X[i]=Grid_X[i-1]+dx;
+    }
+
+    Grid_Y[0]=0;
+    for(j=1;j<y;j++)
+    {
+        Grid_Y[j]=Grid_Y[j-1]+dy;
+    }
+
+    //Array Initialisation
+    for(i=0;i<x;i++)
+    {
+        for(j=0;j<y;j++)
+        {
+            Onew[i][j]=0;
+            O[i][j]=0;
+            Odiff[i][j]=0;
+        }
+    }
+
+    //Boundary Conditions
+    //for top wall only
+    for(i=0;i<x;i++)
+    {
+        O[i][y-1]=100;
+        Onew[i][y-1]=100;
+    }
+
+
+    //Iteration Loop
+    do
+    {
+        err=0;
+        //Space loop
+        for(i=1;i<x-1;i++)
+        {
+            for(j=1;j<y-1;j++)
+            {
+                Onew[i][j]=(O[i+1][j]+O[i-1][j]+O[i][j+1]+O[i][j-1])/4;
+
+                Odiff[i][j]=abs(Onew[i][j]-O[i][j]);
+                err=max(err,Odiff[i][j]);
+
+                O[i][j]=Onew[i][j];
+            }
+        }
+
+        count++;
+    }
+    while(err>eps);
+
+    cout<<"The values of temp obtained at mid point is :"<<endl;
+    cout<<Onew[50][50]<<endl;
+
+
+    cout<<"The total number of iteration is :"<<count<<endl;
+
+    //Writing the results to a file
+
+    ofstream file("2D_Steady_HC_GS_101GP.txt");
+
+    if(!file.is_open())                 //to check if any error in creating or writing to the file
+    {
+        cout<<"Error while opening or writing the File"<<endl;
+    }
+    else
+    {
+        file<<endl;
+        for(i=0;i<x;i++)
+        {
+            for(j=0;j<y;j++)
+            {
+                file<<Grid_X[i]<<"\t"<<Grid_Y[j]<<"\t"<<Onew[i][j]<<endl;
+            }
+        }
+        cout<<"File written successfully"<<endl;
+        file.close();
+    }
+
+    return 0;
+
+}
